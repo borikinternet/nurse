@@ -19,12 +19,10 @@ class Nurse:
         i = self._run_circles
         while i:
             e = self._esl.recvEventTimed(10)
-            if i > 0:
-                i -= 1
-            if not e:
-                continue
+            if i > 0: i -= 1
+            if not e: continue
             if e.getHeader('Event-Type') == 'CUSTOM':
-                h_name = 'CUSTOM::%s' % e.getHeader('Event-Subclass')
+                h_name = e.getHeader('Event-Subclass')
             else:
                 h_name = e.getHeader('Event-Type')
             if h_name in self._handlers:
