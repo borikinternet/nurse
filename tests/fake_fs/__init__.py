@@ -1,14 +1,35 @@
+#  Copyright (c) 2020. borik.internet@gmail.com
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
 import multiprocessing
 import socket
 import threading
 import select
 import time
+import uuid
 
 FS_AUTH_ACCEPTED_REPLY = b'Content-Type: command/reply\nReply-Text: +OK accepted\n\n'
 FS_AUTH_DENIED_REPLY = b'Content-Type: command/reply\nReply-Text: -ERR invalid\n\n'
 FS_EXIT_REPLY = b'Content-Type: command/reply\nReply-Text: +OK bye\n\n'
 FS_ERR_COMMAND_NOT_FOUND = b'Content-Type: command/reply\nReply-Text: -ERR command not found\n\n'
-FS_DISCONNECT_NOTICE = b'Content-Type: text/disconnect-notice\nContent-Length: 67'
+FS_DISCONNECT_NOTICE = b'Content-Type: text/disconnect-notice\nContent-Length: 67\n\n'
 FS_AUTH_INVITE = b'Content-Type: auth/request\n\n'
 
 DS_EVENT = 0
@@ -85,6 +106,7 @@ class FakeFS(object):
         self._conn_success = conn_success
         self._event_generator = threading.Thread(target=self._generate_events)
         self._events = _FakeFsEventList([_fs_events[event] for event in events])
+        self._uuid = uuid.uuid4()
 
     def run(self):
         self._conn.send(FS_AUTH_INVITE)
